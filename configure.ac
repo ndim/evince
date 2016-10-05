@@ -28,9 +28,9 @@ m4_define([ev_document_lt_version_info],[ev_document_lt_current:ev_document_lt_r
 m4_define([ev_document_lt_current_minus_age],[m4_eval(ev_document_lt_current - ev_document_lt_age)])
 
 # Libtool version of the view library
-m4_define([ev_view_lt_current],[3])
+m4_define([ev_view_lt_current],[4])
 m4_define([ev_view_lt_revision],[0])
-m4_define([ev_view_lt_age],[0])
+m4_define([ev_view_lt_age],[1])
 m4_define([ev_view_lt_version_info],[ev_view_lt_current:ev_view_lt_revision:ev_view_lt_age])
 m4_define([ev_view_lt_current_minus_age],[m4_eval(ev_view_lt_current - ev_view_lt_age)])
 
