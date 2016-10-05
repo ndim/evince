@@ -5,6 +5,7 @@
     <separator/>
     <toolitem name="PageSelector" action="PageSelector"/>
     <separator/>
+    <toolitem name="ViewFitHeight" action="ViewFitHeight"/>
     <toolitem name="ViewFitWidth" action="ViewFitWidth"/>
     <toolitem name="ViewFitPage" action="ViewFitPage"/>
     <toolitem name="ViewZoomIn" action="ViewZoomIn"/>

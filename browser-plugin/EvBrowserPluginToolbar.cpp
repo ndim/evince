@@ -35,6 +35,7 @@ struct _EvBrowserPluginToolbarPrivate {
         GtkWidget *dualToggleButton;
         GtkWidget *zoomFitPageRadioButton;
         GtkWidget *zoomFitWidthRadioButton;
+        GtkWidget *zoomFitHeightRadioButton;
         GtkWidget *zoomAutomaticRadioButton;
         GtkWidget *searchToggleButton;
         GtkWidget *searchPopover;
@@ -87,6 +88,12 @@ static void zoomFitWidthToggled(EvBrowserPluginToolbar *toolbar)
 {
         if (gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(toolbar->priv->zoomFitWidthRadioButton)))
                 toolbar->priv->plugin->setSizingMode(EV_SIZING_FIT_WIDTH);
+}
+
+static void zoomFitHeightToggled(EvBrowserPluginToolbar *toolbar)
+{
+        if (gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(toolbar->priv->zoomFitHeightRadioButton)))
+                toolbar->priv->plugin->setSizingMode(EV_SIZING_FIT_HEIGHT);
 }
 
 static void zoomAutomaticToggled(EvBrowserPluginToolbar *toolbar)
@@ -210,6 +217,12 @@ static void sizingModeChanged(EvDocumentModel *model, GParamSpec *, EvBrowserPlu
         }
 
         {
+                SignalBlocker fitHeightBlocker(toolbar->priv->zoomFitPageRadioButton, zoomFitHeightToggled, toolbar);
+                gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(toolbar->priv->zoomFitHeightRadioButton),
+                                               toolbar->priv->plugin->sizingMode() == EV_SIZING_FIT_HEIGHT);
+        }
+
+        {
                 SignalBlocker automaticBlocker(toolbar->priv->zoomAutomaticRadioButton, zoomAutomaticToggled, toolbar);
                 gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(toolbar->priv->zoomAutomaticRadioButton),
                                                toolbar->priv->plugin->sizingMode() == EV_SIZING_AUTOMATIC);
@@ -300,6 +313,15 @@ static GtkWidget *createSizingModeMenu(EvBrowserPluginToolbar *toolbar)
         gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(menuItem),
                                        toolbar->priv->plugin->sizingMode() == EV_SIZING_FIT_WIDTH);
         g_signal_connect_swapped(menuItem, "toggled", G_CALLBACK(zoomFitWidthToggled), toolbar);
+        gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuItem);
+        gtk_widget_show(menuItem);
+
+        menuItem = gtk_check_menu_item_new_with_mnemonic(_("Fit _Height"));
+        toolbar->priv->zoomFitHeightRadioButton = menuItem;
+        gtk_check_menu_item_set_draw_as_radio(GTK_CHECK_MENU_ITEM(menuItem), TRUE);
+        gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(menuItem),
+                                       toolbar->priv->plugin->sizingMode() == EV_SIZING_FIT_HEIGHT);
+        g_signal_connect_swapped(menuItem, "toggled", G_CALLBACK(zoomFitHeightToggled), toolbar);
         gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuItem);
         gtk_widget_show(menuItem);
 

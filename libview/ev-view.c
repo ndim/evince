@@ -1790,7 +1790,7 @@ goto_fitv_dest (EvView *view, EvLinkDest *dest)
 						 allocation.width,
 						 allocation.height);
 
-		ev_document_model_set_sizing_mode (view->model, EV_SIZING_FREE);
+		ev_document_model_set_sizing_mode (view->model, EV_SIZING_FIT_HEIGHT);
 		ev_document_model_set_scale (view->model, zoom);
 	}
 
@@ -3861,6 +3861,7 @@ ev_view_size_request_continuous_dual_page (EvView         *view,
 
 	switch (view->sizing_mode) {
 	        case EV_SIZING_FIT_WIDTH:
+	        case EV_SIZING_FIT_HEIGHT:
 	        case EV_SIZING_FIT_PAGE:
 	        case EV_SIZING_AUTOMATIC:
 			requisition->width = 1;
@@ -3891,6 +3892,7 @@ ev_view_size_request_continuous (EvView         *view,
 
 	switch (view->sizing_mode) {
 	        case EV_SIZING_FIT_WIDTH:
+	        case EV_SIZING_FIT_HEIGHT:
 	        case EV_SIZING_FIT_PAGE:
 	        case EV_SIZING_AUTOMATIC:
 			requisition->width = 1;
@@ -3940,9 +3942,20 @@ ev_view_size_request_dual_page (EvView         *view,
 	}
 	compute_border (view, &border);
 
-	requisition->width = view->sizing_mode == EV_SIZING_FIT_WIDTH ? 1 :
-		((width + border.left + border.right) * 2) + (view->spacing * 3);
-	requisition->height = (height + border.top + border.bottom) + (view->spacing * 2);
+	switch (view->sizing_mode) {
+	case EV_SIZING_FIT_WIDTH:
+	  requisition->width = 1;
+	  requisition->height = (height + border.top + border.bottom) + (view->spacing * 2);
+	  break;
+	case EV_SIZING_FIT_HEIGHT:
+	  requisition->width = ((width + border.left + border.right) * 2) + (view->spacing * 3);
+	  requisition->height = 1;
+	  break;
+	default:
+	  requisition->width  = ((width + border.left + border.right) * 2) + (view->spacing * 3);
+	  requisition->height = (height + border.top + border.bottom) + (view->spacing * 2);
+	  break;
+	}
 }
 
 static void
@@ -3962,9 +3975,20 @@ ev_view_size_request_single_page (EvView         *view,
 	ev_view_get_page_size (view, view->current_page, &width, &height);
 	compute_border (view, &border);
 
-	requisition->width = view->sizing_mode == EV_SIZING_FIT_WIDTH ? 1 :
-		width + border.left + border.right + (2 * view->spacing);
-	requisition->height = height + border.top + border.bottom + (2 * view->spacing);
+	switch (view->sizing_mode) {
+	case EV_SIZING_FIT_WIDTH:
+	  requisition->width = 1;
+	  requisition->height = height + border.top + border.bottom + (2 * view->spacing);
+	  break;
+	case EV_SIZING_FIT_HEIGHT:
+	  requisition->width = width + border.left + border.right + (2 * view->spacing);
+	  requisition->height = 1;
+	  break;
+	default:
+	  requisition->width = width + border.left + border.right + (2 * view->spacing);
+	  requisition->height = height + border.top + border.bottom + (2 * view->spacing);
+	  break;
+	}
 }
 
 static void
@@ -3988,6 +4012,7 @@ ev_view_size_request (GtkWidget      *widget,
 	 */
 	if (!view->internal_size_request &&
 	    (view->sizing_mode == EV_SIZING_FIT_WIDTH ||
+	     view->sizing_mode == EV_SIZING_FIT_HEIGHT ||
 	     view->sizing_mode == EV_SIZING_FIT_PAGE ||
 	     view->sizing_mode == EV_SIZING_AUTOMATIC)) {
 		GtkAllocation allocation;
@@ -4056,6 +4081,7 @@ ev_view_size_allocate (GtkWidget      *widget,
 		return;
 
 	if (view->sizing_mode == EV_SIZING_FIT_WIDTH ||
+	    view->sizing_mode == EV_SIZING_FIT_HEIGHT ||
 	    view->sizing_mode == EV_SIZING_FIT_PAGE ||
 	    view->sizing_mode == EV_SIZING_AUTOMATIC) {
 		GtkRequisition req;
@@ -8420,6 +8446,9 @@ ev_view_zoom_for_size_continuous_and_dual_page (EvView *view,
 	case EV_SIZING_FIT_WIDTH:
 		scale = zoom_for_size_fit_width (doc_width, doc_height, width - sb_size, height);
 		break;
+	case EV_SIZING_FIT_HEIGHT:
+		scale = zoom_for_size_fit_height (doc_width, doc_height, width - sb_size, height);
+		break;
 	case EV_SIZING_FIT_PAGE:
 		scale = zoom_for_size_fit_page (doc_width, doc_height, width - sb_size, height);
 		break;
@@ -8463,6 +8492,9 @@ ev_view_zoom_for_size_continuous (EvView *view,
 	switch (view->sizing_mode) {
 	case EV_SIZING_FIT_WIDTH:
 		scale = zoom_for_size_fit_width (doc_width, doc_height, width - sb_size, height);
+		break;
+	case EV_SIZING_FIT_HEIGHT:
+		scale = zoom_for_size_fit_height (doc_width, doc_height, width - sb_size, height);
 		break;
 	case EV_SIZING_FIT_PAGE:
 		scale = zoom_for_size_fit_page (doc_width, doc_height, width - sb_size, height);
@@ -8513,6 +8545,10 @@ ev_view_zoom_for_size_dual_page (EvView *view,
 		sb_size = ev_view_get_scrollbar_size (view, GTK_ORIENTATION_VERTICAL);
 		scale = zoom_for_size_fit_width (doc_width, doc_height, width - sb_size, height);
 		break;
+	case EV_SIZING_FIT_HEIGHT:
+		sb_size = ev_view_get_scrollbar_size (view, GTK_ORIENTATION_HORIZONTAL);
+		scale = zoom_for_size_fit_height (doc_width, doc_height, width - sb_size, height);
+		break;
 	case EV_SIZING_FIT_PAGE:
 		scale = zoom_for_size_fit_page (doc_width, doc_height, width, height);
 		break;
@@ -8551,6 +8587,10 @@ ev_view_zoom_for_size_single_page (EvView *view,
 		sb_size = ev_view_get_scrollbar_size (view, GTK_ORIENTATION_VERTICAL);
 		scale = zoom_for_size_fit_width (doc_width, doc_height, width - sb_size, height);
 		break;
+	case EV_SIZING_FIT_HEIGHT:
+		sb_size = ev_view_get_scrollbar_size (view, GTK_ORIENTATION_HORIZONTAL);
+		scale = zoom_for_size_fit_height (doc_width, doc_height, width, height-sb_size);
+		break;
 	case EV_SIZING_FIT_PAGE:
 		scale = zoom_for_size_fit_page (doc_width, doc_height, width, height);
 		break;
@@ -8575,6 +8615,7 @@ ev_view_zoom_for_size (EvView *view,
 
 	g_return_if_fail (EV_IS_VIEW (view));
 	g_return_if_fail (view->sizing_mode == EV_SIZING_FIT_WIDTH ||
+			  view->sizing_mode == EV_SIZING_FIT_HEIGHT ||
 			  view->sizing_mode == EV_SIZING_FIT_PAGE ||
 			  view->sizing_mode == EV_SIZING_AUTOMATIC);
 	g_return_if_fail (width >= 0);

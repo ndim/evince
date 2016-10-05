@@ -186,6 +186,8 @@
     <em>height</em> of the window.</p>
     <p>The <gui>Fit Width</gui> option will make a document page fill the whole
     <em>width</em> of the window.</p>
+    <p>The <gui>Fit Height</gui> option will make a document page fill the whole
+    <em>height</em> of the window.</p>
     <p>If you want to see two pages at once, side by side, like in a book,
     click the <gui>View options</gui> button in the top-right corner and select
     <gui>Dual</gui>.</p>

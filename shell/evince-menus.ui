@@ -201,6 +201,11 @@
         <attribute name="target">fit-width</attribute>
       </item>
       <item>
+        <attribute name="label" translatable="yes">Fit _Height</attribute>
+        <attribute name="action">win.sizing-mode</attribute>
+        <attribute name="target">fit-height</attribute>
+      </item>
+      <item>
         <attribute name="label" translatable="yes">_Automatic</attribute>
         <attribute name="action">win.sizing-mode</attribute>
         <attribute name="target">automatic</attribute>
