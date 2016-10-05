@@ -536,6 +536,25 @@ ev_document_model_get_sizing_mode (EvDocumentModel *model)
 	return model->sizing_mode;
 }
 
+const char *const
+ev_sizing_mode_to_string (EvSizingMode sizing_mode)
+{
+#define DEFINE_ENUM_STR(s) case s: return #s; break
+  switch (sizing_mode) {
+    DEFINE_ENUM_STR(EV_SIZING_FIT_PAGE);
+    DEFINE_ENUM_STR(EV_SIZING_FIT_WIDTH);
+    DEFINE_ENUM_STR(EV_SIZING_FIT_HEIGHT);
+    DEFINE_ENUM_STR(EV_SIZING_FREE);
+    DEFINE_ENUM_STR(EV_SIZING_AUTOMATIC);
+    /* There is no default: on purpose. This can make the compiler
+     * complain about unhandled cases which would go unnoticed otherwise. */
+  }
+  g_assert_not_reached ();
+  /* Return a useful value in case assertions are optimized out. */
+  return "Unknown EV_SIZING_* value";
+#undef DEFINE_ENUM_STR
+}
+
 static void
 _ev_document_model_set_dual_page_internal (EvDocumentModel *model,
                                            gboolean         dual_page)

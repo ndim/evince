@@ -24,6 +24,8 @@
 #include <math.h>
 #include <string.h>
 
+#include <stdio.h>
+
 #include <glib/gi18n-lib.h>
 #include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
@@ -1786,6 +1788,14 @@ goto_fitv_dest (EvView *view, EvLinkDest *dest)
 
 		ev_document_get_page_size (view->document, page, &doc_width, &doc_height);
 
+		printf("%s"
+		       " allocation width*height %d*%d"
+		       " doc_width*doc_height %f*%f"
+		       "\n",
+		       __FUNCTION__,
+		       allocation.width, allocation.height,
+		       doc_width, doc_height);
+
 		zoom = zoom_for_size_fit_height (doc_width - doc_point.x, doc_height,
 						 allocation.width,
 						 allocation.height);
@@ -1821,6 +1831,14 @@ goto_fith_dest (EvView *view, EvLinkDest *dest)
 		gtk_widget_get_allocation (GTK_WIDGET (view), &allocation);
 
 		ev_document_get_page_size (view->document, page, &doc_width, NULL);
+
+		printf("%s"
+		       " allocation width*height %d*%d"
+		       " doc_width*doc_height %f*%s"
+		       "\n",
+		       __FUNCTION__,
+		       allocation.width, allocation.height,
+		       doc_width, "XXX");
 
 		zoom = zoom_for_size_fit_width (doc_width, top,
 						allocation.width,
@@ -3975,6 +3993,14 @@ ev_view_size_request_single_page (EvView         *view,
 	ev_view_get_page_size (view, view->current_page, &width, &height);
 	compute_border (view, &border);
 
+	printf("%s"
+	       " page size w*h %d*%d"
+	       " sizing_mode %s"
+	       "\n",
+	       __FUNCTION__,
+	       width, height,
+	       ev_sizing_mode_to_string(view->sizing_mode));
+
 	switch (view->sizing_mode) {
 	case EV_SIZING_FIT_WIDTH:
 	  requisition->width = 1;
@@ -3989,6 +4015,9 @@ ev_view_size_request_single_page (EvView         *view,
 	  requisition->height = height + border.top + border.bottom + (2 * view->spacing);
 	  break;
 	}
+	printf("  requisition w*h %d*%d"
+	       "\n",
+	       requisition->width, requisition->height);
 }
 
 static void
@@ -4006,6 +4035,12 @@ ev_view_size_request (GtkWidget      *widget,
 
 		return;
 	}
+
+	printf("%s"
+	       " requisition w*h %d*%d"
+	       "\n",
+	       __FUNCTION__,
+	       requisition->width, requisition->height);
 
 	/* Get zoom for size here when not called from
 	 * ev_view_size_allocate()
@@ -8425,6 +8460,12 @@ ev_view_zoom_for_size_continuous_and_dual_page (EvView *view,
 	gdouble scale;
 	gint sb_size;
 
+	printf("%s"
+	       " w*h %d*%d"
+	       "\n",
+	       __FUNCTION__,
+	       width, height);
+
 	ev_document_get_max_page_size (view->document, &doc_width, &doc_height);
 	if (view->rotation == 90 || view->rotation == 270) {
 		gdouble tmp;
@@ -8435,6 +8476,14 @@ ev_view_zoom_for_size_continuous_and_dual_page (EvView *view,
 	}
 
 	compute_border (view, &border);
+
+	printf("%s"
+	       " w*h %d*%d"
+	       " doc w*h %f*%f"
+	       "\n",
+	       __FUNCTION__,
+	       width, height,
+	       doc_width, doc_height);
 
 	doc_width *= 2;
 	width -= (2 * (border.left + border.right) + 3 * view->spacing);
@@ -8574,6 +8623,12 @@ ev_view_zoom_for_size_single_page (EvView *view,
 	gdouble scale;
 	gint sb_size;
 
+	printf("%s"
+	       " w*h %d*%d"
+	       "\n",
+	       __FUNCTION__,
+	       width, height);
+
 	get_doc_page_size (view, view->current_page, &doc_width, &doc_height);
 
 	/* Get an approximate border */
@@ -8612,6 +8667,12 @@ ev_view_zoom_for_size (EvView *view,
 		       int     height)
 {
 	gboolean dual_page;
+
+	printf("%s"
+	       " w*h %d*%d"
+	       "\n",
+	       __FUNCTION__,
+	       width, height);
 
 	g_return_if_fail (EV_IS_VIEW (view));
 	g_return_if_fail (view->sizing_mode == EV_SIZING_FIT_WIDTH ||

@@ -106,6 +106,9 @@ void             ev_document_model_set_fullscreen    (EvDocumentModel *model,
 						      gboolean         fullscreen);
 gboolean         ev_document_model_get_fullscreen    (EvDocumentModel *model);
 
+/* just for helping with debugging the code for the fit-height mode */
+const char *const ev_sizing_mode_to_string (EvSizingMode sizing_mode);
+
 /* deprecated */
 
 EV_DEPRECATED_FOR(ev_document_model_set_page_layout)
