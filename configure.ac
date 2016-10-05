@@ -264,6 +264,23 @@ if test "$with_gtk_unix_print" = "yes"; then
    AC_DEFINE([GTKUNIXPRINT_ENABLED], [1], [Define if gtk+-unix-print is enabled.])
 fi
 
+# *****************************
+# Rebuilding PNG icons from SVG
+# *****************************
+
+AC_ARG_VAR([INKSCAPE], [inkscape programme if you want to rebuild the png icons])
+AC_PATH_PROG([INKSCAPE], [inkscape], [no])
+AM_CONDITIONAL([HAVE_INKSCAPE], [test "x$INKSCAPE" != "xno"])
+
+AC_ARG_VAR([PNGCRUSH], [pngcrush programme if you want to rebuild the png icons])
+AC_PATH_PROG([PNGCRUSH], [pngcrush], [no])
+AM_CONDITIONAL([HAVE_PNGCRUSH], [test "x$PNGCRUSH" != "xno"])
+
+dnl Compose message string for configure summary at the end of configure.ac
+AS_IF([test "x$INKSCAPE" = "xno"], [update_png_icons_msg="no"],
+      [test "x$PNGCRUSH" = "xno"], [update_png_icons_msg="yes (inkscape only)"],
+                                   [update_png_icons_msg="yes (inkscape+pngcrush)"])
+
 # *********************
 # GNOME Keyring support
 # *********************
@@ -991,5 +1008,6 @@ Keyring integration ......:  $with_keyring
 GTK+ Unix Print ..........:  $with_gtk_unix_print
 Thumbnail cache ..........:  $enable_gnome_desktop
 Multimedia ...............:  $enable_multimedia
+Update PNG icons from SVG :  $update_png_icons_msg
 
 ])

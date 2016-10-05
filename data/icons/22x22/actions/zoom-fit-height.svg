@@ -16,10 +16,12 @@
    sodipodi:version="0.32"
    inkscape:version="0.91 r13725"
    version="1.0"
-   sodipodi:docname="zoom-fit-page.svg"
+   sodipodi:docname="zoom-fit-height.svg"
    inkscape:export-filename="/home/andreas/project/misc icons/22x22/actions/zoom-fit-width.png"
    inkscape:export-xdpi="90"
-   inkscape:export-ydpi="90">
+   inkscape:export-ydpi="90"
+   inkscape:output_extension="org.inkscape.output.svg.inkscape"
+   sodipodi:modified="TRUE">
   <defs
      id="defs7362">
     <linearGradient
@@ -119,8 +121,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="31.672167"
-     inkscape:cx="14.161836"
-     inkscape:cy="13.127552"
+     inkscape:cx="2.1332212"
+     inkscape:cy="8.7266792"
      inkscape:current-layer="draw_zoom"
      showgrid="false"
      inkscape:grid-bbox="true"
@@ -140,6 +142,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -210,10 +213,10 @@
            d="M 11.4375,235.40625 A 8.46875,8.46875 0 0 1 2.96875,243.875 8.46875,8.46875 0 0 1 -5.5,235.40625 a 8.46875,8.46875 0 0 1 8.46875,-8.46875 8.46875,8.46875 0 0 1 8.46875,8.46875 z"
            transform="matrix(0.770704,0,0,0.773608,-287.3127,-569.1141)" />
         <g
-           id="g4556"
-           transform="matrix(-0.70710678,0.70710678,-0.70710678,-0.70710678,-760.08859,-458.66537)">
+           id="g5327"
+           transform="matrix(0,-1,1,0,101.7006,-671.8038)">
           <g
-             transform="matrix(1.043478,0,0,1,-292.3559,-393.7522)"
+             transform="matrix(1.0434783,0,0,1,-292.35595,-393.7522)"
              style="display:inline;opacity:0.8"
              id="g5768">
             <path
